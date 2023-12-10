@@ -1,21 +1,62 @@
 namespace BattleShips.Test;
 
+using static BattleShips.Board;
+
 
 [TestClass]
 public class BattleShipsTest
 {
-    [TestMethod]
-    public void PrintShouldEmptyBoard()
-    {
-      var writer = new StringWriter();
-      Console.SetOut(writer);
-      BattleShips.Board.print();
 
-      var actual = writer.GetStringBuilder().ToString();
+   StringWriter writer = null!;
+   TextWriter consoleWriter = null!;
+    
+   [TestInitialize]
+   public void setup()
+   {
+    writer = new StringWriter();
+    consoleWriter = Console.Out;
+    Console.SetOut(writer);
+   }
 
-      var expected = @"
+   [TestCleanup]
+   public void teardown()
+   {
+    Console.SetOut(consoleWriter);
+   }
+
+
+   [TestMethod]
+   public void PrintShouldEmptyBoard()
+   {
+     Board.emptyGame().print();
+
+     var actual = writer.GetStringBuilder().ToString();
+
+     var expected = " | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n" +
+"0|   |   |   |   |   |   |   |   |   |   |\n" +
+"1|   |   |   |   |   |   |   |   |   |   |\n" +
+"2|   |   |   |   |   |   |   |   |   |   |\n" +
+"3|   |   |   |   |   |   |   |   |   |   |\n" +
+"4|   |   |   |   |   |   |   |   |   |   |\n" +
+"5|   |   |   |   |   |   |   |   |   |   |\n" +
+"6|   |   |   |   |   |   |   |   |   |   |\n" +
+"7|   |   |   |   |   |   |   |   |   |   |\n" +
+"8|   |   |   |   |   |   |   |   |   |   |\n" +
+"9|   |   |   |   |   |   |   |   |   |   |\n";
+
+      Assert.AreEqual(expected, actual);
+   }
+
+   //[TestMethod]
+   public void ShouldPrintASeaFire()
+   {
+     var game = Board.emptyGame();
+     game.fire(0, 0).print();
+
+
+     var expected = @"
  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
-0|   |   |   |   |   |   |   |   |   |   |
+0| o |   |   |   |   |   |   |   |   |   |
 1|   |   |   |   |   |   |   |   |   |   |
 2|   |   |   |   |   |   |   |   |   |   |
 3|   |   |   |   |   |   |   |   |   |   |
@@ -27,7 +68,11 @@ public class BattleShipsTest
 9|   |   |   |   |   |   |   |   |   |   |
 ";
 
-      Assert.AreEqual(expected, actual);
-    }
+
+     var actual = writer.GetStringBuilder().ToString();
+
+     Assert.AreEqual(expected, actual);
+
+   }
 }
 
