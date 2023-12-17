@@ -1,5 +1,6 @@
 namespace BattleShips.Test;
 
+using Microsoft.FSharp.Collections;
 using static BattleShips.Board;
 
 
@@ -72,7 +73,34 @@ public class BattleShipsTest
     var actual = writer.GetStringBuilder().ToString();
 
     Assert.AreEqual(expected, actual);
+  }
 
+  //[TestMethod]
+  public void ShouldPrintShips()
+  {
+    var game = Board.emptyGame();
+    var ships = new List<ShipInBoard> {};
+
+    game
+      .start(ListModule.OfSeq(ships))
+      .printShips();
+
+    var expected = 
+    " | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n" +
+    "0| o |   |   |   |   |   |   |   |   |   |\n" +
+    "1|   |   | o |   |   |   |   |   |   |   |\n" +
+    "2|   |   |   |   |   |   |   |   |   |   |\n" +
+    "3|   |   |   |   |   |   |   |   |   |   |\n" +
+    "4|   |   |   |   |   |   |   |   |   |   |\n" +
+    "5|   |   |   |   |   |   |   |   |   |   |\n" +
+    "6|   |   |   |   |   |   |   |   |   |   |\n" +
+    "7|   |   |   |   |   |   |   |   |   |   |\n" +
+    "8|   |   |   |   |   |   |   |   |   |   |\n" +
+    "9|   |   |   |   |   |   |   |   |   |   |\n";
+
+    var actual = writer.GetStringBuilder().ToString();
+
+    Assert.AreEqual(expected, actual);
   }
 }
 

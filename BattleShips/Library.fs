@@ -7,19 +7,19 @@ module Board =
         | Destroyer = 2
         | Gunship = 3
 
-    type Coordinates = int * int
+    type Coordinate = { x: int;  y: int }
 
-    type ShipInBoard = Coordinates * Ship
+    type ShipInBoard = {coordinates: Coordinate; ship: Ship}
 
-    type Shots = Coordinates list
+    type Shots = Coordinate list
 
-    type GameState = ShipInBoard list * Shots
+    type private GameState = ShipInBoard list * Shots
 
     let private printRow (number: int, shots: Shots) =
         let shotInThisLine =
             shots
-            |> List.filter (fun shot -> fst shot = number)
-            |> List.map (fun shot -> snd shot)
+            |> List.filter (fun shot -> shot.x = number)
+            |> List.map (fun shot -> shot.y)
 
 
         let shots =
@@ -61,10 +61,15 @@ module Board =
         member self.fire(x: int, y: int) : Game =
             let nextState =
                 match state with
-                | (ships, shots) -> (ships, (x, y) :: shots)
+                | (ships, shots) -> (ships, {x = x; y = y} :: shots)
 
             Game nextState
 
         member self.print() : unit = printGame state
+
+        member self.start (ships: ShipInBoard list): Game = Game([], [])
+
+        member self.printShips() : unit = () 
+
 
     let emptyGame () : Game = Game([], [])
