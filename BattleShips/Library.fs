@@ -7,9 +7,11 @@ module Board =
         | Destroyer = 2
         | Gunship = 3
 
-    type Coordinate = { x: int;  y: int }
+    type Coordinate = { x: int; y: int }
 
-    type ShipInBoard = {coordinate: Coordinate; ship: Ship}
+    type ShipInBoard =
+        { coordinates: Coordinate list
+          ship: Ship }
 
     type Shots = Coordinate list
 
@@ -25,8 +27,12 @@ module Board =
 
         let shipInThisLine =
             fst gameState
-            |> List.filter (fun ship -> ship.coordinate.x = number)
-            |> List.map (fun ship -> ship.coordinate.y, ship.ship)
+            |> List.map (fun shipInBoard ->
+                shipInBoard.coordinates
+                |> List.tryFind (fun coordinate -> coordinate.x = number),
+                shipInBoard.ship)
+            |> List.filter (fun coordShip -> (fst coordShip).IsSome)
+            |> List.map (fun coordShip -> (fst coordShip).Value.y, snd coordShip)
             |> dict
 
 
@@ -38,8 +44,7 @@ module Board =
                 | _, (_, Ship.Gunship) -> 'g'
                 | _, (_, Ship.Destroyer) -> 'd'
                 | _, (_, Ship.Carrier) -> 'c'
-                | _, (_, _) -> ' '
-                )
+                | _, (_, _) -> ' ')
 
 
         printfn
@@ -72,13 +77,13 @@ module Board =
         member self.fire(x: int, y: int) : Game =
             let nextState =
                 match state with
-                | (ships, shots) -> (ships, {x = x; y = y} :: shots)
+                | (ships, shots) -> (ships, { x = x; y = y } :: shots)
 
             Game nextState
 
         member self.print() : unit = printGame state
 
-        member self.start (ships: ShipInBoard list): Game = Game(ships, [])
+        member self.start(ships: ShipInBoard list) : Game = Game(ships, [])
 
 
 

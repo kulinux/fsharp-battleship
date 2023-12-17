@@ -79,7 +79,7 @@ public class BattleShipsTest
   public void ShouldPrintShips()
   {
     var game = Board.emptyGame();
-    var ships = new List<ShipInBoard> { new ShipInBoard(new Coordinate(0, 0), Ship.Gunship) };
+    var ships = new List<ShipInBoard> { new ShipInBoard(ListModule.OfSeq(new List<Coordinate> { new Coordinate(0, 0) }), Ship.Gunship) };
 
     game
       .start(ListModule.OfSeq(ships))
