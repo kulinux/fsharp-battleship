@@ -57,7 +57,7 @@ public class BattleShipsTest
       .fire(1, 2)
       .print();
 
-    var expected = 
+    var expected =
     " | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n" +
     "0| o |   |   |   |   |   |   |   |   |   |\n" +
     "1|   |   | o |   |   |   |   |   |   |   |\n" +
@@ -75,20 +75,20 @@ public class BattleShipsTest
     Assert.AreEqual(expected, actual);
   }
 
-  //[TestMethod]
+  [TestMethod]
   public void ShouldPrintShips()
   {
     var game = Board.emptyGame();
-    var ships = new List<ShipInBoard> {};
+    var ships = new List<ShipInBoard> { new ShipInBoard(new Coordinate(0, 0), Ship.Gunship) };
 
     game
       .start(ListModule.OfSeq(ships))
-      .printShips();
+      .print();
 
-    var expected = 
+    var expected =
     " | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n" +
-    "0| o |   |   |   |   |   |   |   |   |   |\n" +
-    "1|   |   | o |   |   |   |   |   |   |   |\n" +
+    "0| g |   |   |   |   |   |   |   |   |   |\n" +
+    "1|   |   |   |   |   |   |   |   |   |   |\n" +
     "2|   |   |   |   |   |   |   |   |   |   |\n" +
     "3|   |   |   |   |   |   |   |   |   |   |\n" +
     "4|   |   |   |   |   |   |   |   |   |   |\n" +

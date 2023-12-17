@@ -9,25 +9,37 @@ module Board =
 
     type Coordinate = { x: int;  y: int }
 
-    type ShipInBoard = {coordinates: Coordinate; ship: Ship}
+    type ShipInBoard = {coordinate: Coordinate; ship: Ship}
 
     type Shots = Coordinate list
 
-    type private GameState = ShipInBoard list * Shots
+    type ShipsInBoard = ShipInBoard list
 
-    let private printRow (number: int, shots: Shots) =
+    type private GameState = ShipsInBoard * Shots
+
+    let private printRow (number: int, gameState: GameState) =
         let shotInThisLine =
-            shots
+            snd gameState
             |> List.filter (fun shot -> shot.x = number)
             |> List.map (fun shot -> shot.y)
+
+        let shipInThisLine =
+            fst gameState
+            |> List.filter (fun ship -> ship.coordinate.x = number)
+            |> List.map (fun ship -> ship.coordinate.y, ship.ship)
+            |> dict
 
 
         let shots =
             [ 0..10 ]
             |> List.map (fun index ->
-                match shotInThisLine |> List.contains index with
-                | true -> 'o'
-                | false -> ' ')
+                match shotInThisLine |> List.contains index, shipInThisLine.TryGetValue index with
+                | true, (false, _) -> 'o'
+                | _, (_, Ship.Gunship) -> 'g'
+                | _, (_, Ship.Destroyer) -> 'd'
+                | _, (_, Ship.Carrier) -> 'c'
+                | _, (_, _) -> ' '
+                )
 
 
         printfn
@@ -45,14 +57,13 @@ module Board =
             shots[9]
 
 
-
     let private printGame (state: GameState) =
         let header = """ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"""
 
         printfn "%s" header
 
         for i in 0..9 do
-            printRow (i, snd state)
+            printRow (i, state)
 
 
     type Game(stateIn: GameState) =
@@ -67,9 +78,8 @@ module Board =
 
         member self.print() : unit = printGame state
 
-        member self.start (ships: ShipInBoard list): Game = Game([], [])
+        member self.start (ships: ShipInBoard list): Game = Game(ships, [])
 
-        member self.printShips() : unit = () 
 
 
     let emptyGame () : Game = Game([], [])
